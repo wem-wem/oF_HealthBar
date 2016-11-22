@@ -3,11 +3,19 @@
 #include "ofMain.h"
 #include "ofxGui.h"
 #include "ofxXmlSettings.h"
+#include "HealthCalculator.h"
 
+
+struct PlayerDate {
+  int health; // Œ»İ‚g‚o
+  int maxHealth;  // Å‘å‚g‚o
+  float currentHealth; // Œ»İ‚Ì‚g‚oŠ„‡(‚g‚oƒo[‚Ì’·‚³)
+  float maxBarScale;
+};
 
 class HealthBar {
-protected:
-  float currentHealth_[2]; // ‚g‚oƒo[‚ÌŒ³‚Ì’·‚³
+private:
+  PlayerDate player_[2];
 
   ofxPanel gui_;
   ofParameter<ofVec2f> barScale_;

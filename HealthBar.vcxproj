@@ -172,6 +172,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\HealthBar.cpp" />
+    <ClCompile Include="src\HealthCalculator.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
     <ClCompile Include="..\..\addons\ofxGui\src\ofxBaseGui.cpp" />
@@ -189,6 +190,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\HealthBar.h" />
+    <ClInclude Include="src\HealthCalculator.h" />
     <ClInclude Include="src\ofApp.h" />
     <ClInclude Include="..\..\addons\ofxGui\src\ofxBaseGui.h" />
     <ClInclude Include="..\..\addons\ofxGui\src\ofxButton.h" />

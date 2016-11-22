@@ -5,7 +5,9 @@
 void HealthBar::setup() {
   guiSetup();
   loadFile(); // デフォルトの設定を最初に読み込む
-  currentHealth_[0] = currentHealth_[1] = barScale_.get().x; // バーの元の長さを保存
+  player_[0].currentHealth = player_[0].maxBarScale = barScale_.get().x;
+  player_[1].currentHealth = player_[1].maxBarScale = barScale_.get().x;
+
   ofAddListener(ofEvents().draw, this, &HealthBar::draw);
 }
 
@@ -16,13 +18,13 @@ void HealthBar::draw(ofEventArgs &args) {
 
 void HealthBar::drawLeft(){
   ofRect(0, 0,
-    (ofGetWidth() / 2) * currentHealth_[0],
+    (ofGetWidth() / 2) * player_[0].currentHealth,
     (ofGetHeight() / 2) * barScale_.get().y);
 }
 
 void HealthBar::drawRight() {
-  ofRect(ofGetWidth() - ((ofGetWidth() / 2) * currentHealth_[1]), 0,
-    (ofGetWidth() / 2) * currentHealth_[1],
+  ofRect(ofGetWidth() - ((ofGetWidth() / 2) * player_[1].currentHealth), 0,
+    (ofGetWidth() / 2) * player_[1].currentHealth,
     (ofGetHeight() / 2) * barScale_.get().y);
 }
 
