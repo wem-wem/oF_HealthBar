@@ -6,7 +6,7 @@
 
 class ofApp : public ofBaseApp {
 private:
-  HealthBar bar_;
+  HealthBar bar_ = HealthBar(0, 500);
 
 public:
   void setup();

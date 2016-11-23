@@ -8,9 +8,15 @@ void ofApp::setup() {
 
 void ofApp::update() {}
 
-void ofApp::draw() {}
+void ofApp::draw() {
+  bar_.draw();
+}
 
-void ofApp::keyPressed(int key) {}
+void ofApp::keyPressed(int key) {
+  if (key == 'd') {
+    bar_.remnant(25);
+  }
+}
 
 void ofApp::keyReleased(int key) {}
 
