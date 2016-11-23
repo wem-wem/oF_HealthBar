@@ -3,7 +3,6 @@
 #include "ofMain.h"
 #include "ofxGui.h"
 #include "ofxXmlSettings.h"
-#include "HealthCalculator.h"
 
 
 struct PlayerDate {
