@@ -4,7 +4,7 @@
 
 // プレイヤーデータの初期化
 HealthBar::HealthBar(const int playerNum, const int maxHealth) {
-  player_.playerNum = playerNum; 
+  player_.playerNum = playerNum;
   player_.health = player_.maxHealth = maxHealth;
 }
 
@@ -34,10 +34,16 @@ void HealthBar::draw() {
 }
 
 // 1Pなら
-void HealthBar::drawLeft(){
+void HealthBar::drawLeft() {
   ofRect(0, 0,
     (ofGetWidth() / 2) * player_.currentBarScale,
     (ofGetHeight() / 2) * barScale_.get().y);
+
+  ofPushStyle();
+  ofSetColor(255, 0, 0);
+  ofRect(0, ofGetHeight()-100,
+         100, 100);
+  ofPopStyle();
 }
 
 // 2Pなら
@@ -70,5 +76,25 @@ void HealthBar::remnant(int damage) {
   player_.health -= damage;  // 現在ＨＰからダメージ分減らす
   float restHealth = (float)player_.health / player_.maxHealth;  // 現在ＨＰが最大ＨＰの何％になったか
   float newBarScale = player_.maxBarScale * restHealth;  // 元のバーの長さから同じ％分だけ長さを短くする
+  float damageCurrent = player_.currentBarScale - newBarScale; // 赤ゲージの長さ
+  drawDamage(damageCurrent);  // こうやって使えたら良かったのに！
   player_.currentBarScale = newBarScale;
+}
+
+// 赤いゲージの表示
+void HealthBar::drawDamage(float damageCurrent) {
+  switch (player_.playerNum) {
+  case PlayerOne:
+    ofPushMatrix();
+    ofColor(255, 0, 0);
+    ofRect(0 + player_.currentBarScale, 0,
+      damageCurrent,
+      (ofGetHeight() / 2) * barScale_.get().y);
+    ofPopMatrix();
+    break;
+  case PlayerTwo:
+    break;
+  default:
+    break;
+  }
 }

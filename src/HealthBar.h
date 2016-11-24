@@ -33,6 +33,10 @@ private:
   void saveFile();
   void loadFile();
 
+  bool test = false;
+  float damage = 0;
+  void drawDamage(float damageCurrent);
+
 public:
   // ‚g‚oƒo[¶¬‚ÉƒvƒŒƒCƒ„[”Ô†‚ÆÅ‘å‚g‚o‚ğó‚¯æ‚é
   HealthBar(const int playerNum, const int maxHealth);
