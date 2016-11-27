@@ -2,11 +2,12 @@
 #pragma once
 #include "ofMain.h"
 #include "HealthBar.h"
-
+#include "player.h"
 
 class ofApp : public ofBaseApp {
 private:
-  HealthBar bar_ = HealthBar(0, 500);
+  Player player_;
+  HealthBar bar_;
 
 public:
   void setup();

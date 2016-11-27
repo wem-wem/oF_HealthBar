@@ -3,7 +3,9 @@
 
 
 void ofApp::setup() {
-  bar_.setup();
+  ofSetFrameRate(60);
+  player_.setup(1, 500);
+  bar_.setup(&player_);
 }
 
 void ofApp::update() {}
@@ -14,7 +16,7 @@ void ofApp::draw() {
 
 void ofApp::keyPressed(int key) {
   if (key == 'd') {
-    bar_.remnant(25);
+    player_.damage(25);
   }
 }
 

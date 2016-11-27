@@ -3,15 +3,7 @@
 #include "ofMain.h"
 #include "ofxGui.h"
 #include "ofxXmlSettings.h"
-
-
-struct PlayerDate {
-  int playerNum;  // ƒvƒŒƒCƒ„[”Ô†
-  int health; // Œ»İ‚g‚o
-  int maxHealth;  // Å‘å‚g‚o
-  float currentBarScale; // Œ»İ‚Ì‚g‚oƒo[‚Ì’·‚³
-  float maxBarScale;  // Œ³X‚Ì‚g‚oƒo[‚Ì’·‚³
-};
+#include "player.h"
 
 class HealthBar {
 private:
@@ -19,8 +11,10 @@ private:
     PlayerOne = 0,
     PlayerTwo = 1,
   };
-
-  PlayerDate player_;
+  Player* player_;
+  float currentScale; // Œ»İ‚g‚oƒo[‚Ì’·‚³
+  float tempHealth; // ƒ_ƒ[ƒW‚ğó‚¯‚é‘O‚Ì‚g‚o‚ğ“ü‚ê‚Ä‚¨‚­” 
+  float damageScale;
 
   ofxPanel gui_;
   ofParameter<ofVec2f> barScale_;
@@ -32,16 +26,12 @@ private:
   void guiSetup();
   void saveFile();
   void loadFile();
-
-  bool test = false;
-  float damage = 0;
-  void drawDamage(float damageCurrent);
-
+  float remnant();
+  void setDamageScale();
+  void updateLeft();
+  void updateRight();
 public:
-  // ‚g‚oƒo[¶¬‚ÉƒvƒŒƒCƒ„[”Ô†‚ÆÅ‘å‚g‚o‚ğó‚¯æ‚é
-  HealthBar(const int playerNum, const int maxHealth);
-
-  void setup();
+  void setup(Player *player);
+  void update(ofEventArgs &args);
   void draw();
-  void remnant(int damage);
 };

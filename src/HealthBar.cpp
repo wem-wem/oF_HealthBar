@@ -2,33 +2,48 @@
 #include "HealthBar.h"
 
 
-// プレイヤーデータの初期化
-HealthBar::HealthBar(const int playerNum, const int maxHealth) {
-  player_.playerNum = playerNum;
-  player_.health = player_.maxHealth = maxHealth;
-}
-
-void HealthBar::setup() {
+void HealthBar::setup(Player *player) {
+  player_ = player;
   guiSetup();
   loadFile(); // デフォルトの設定を最初に読み込む
+  tempHealth = player_->getMaxHP();  // 比較用ＨＰに最大値を代入
+  currentScale = barScale_.get().x; // バーの元の長さをロードして代入
+  ofAddListener(ofEvents().update, this, &HealthBar::update);
+}
 
-  // 元のバーの長さをロードして代入。同じ値を現在ＨＰのバーの長さにも代入
-  player_.currentBarScale = player_.maxBarScale = barScale_.get().x;
+void HealthBar::update(ofEventArgs &args) {
+  if (damageScale != 0) {
+    for (int i = 0; i < ofGetFrameRate()/4; i++) {
+      damageScale = damageScale - (damageScale / ofGetFrameRate()/4);
+    }
+  }
 }
 
 void HealthBar::draw() {
   // プレイヤー番号に応じて表示位置をズラす
-  switch (player_.playerNum) {
+  switch (player_->getID()) {
   case PlayerOne:
     drawLeft();
+    if (player_->getHP() != tempHealth) {
+      setDamageScale();
+    }
+    updateLeft();
     break;
 
   case PlayerTwo:
     drawRight();
+    if (player_->getHP() != tempHealth) {
+      setDamageScale();
+    }
+    updateRight();
     break;
 
   default:  // 例外の数字が入力された場合は１Ｐ側を表示
     drawLeft();
+    if (player_->getHP() != tempHealth) {
+      setDamageScale();
+    }
+    updateLeft();
     break;
   }
 }
@@ -36,20 +51,14 @@ void HealthBar::draw() {
 // 1Pなら
 void HealthBar::drawLeft() {
   ofRect(0, 0,
-    (ofGetWidth() / 2) * player_.currentBarScale,
+    (ofGetWidth() / 2) * currentScale,
     (ofGetHeight() / 2) * barScale_.get().y);
-
-  ofPushStyle();
-  ofSetColor(255, 0, 0);
-  ofRect(0, ofGetHeight()-100,
-         100, 100);
-  ofPopStyle();
 }
 
 // 2Pなら
 void HealthBar::drawRight() {
-  ofRect(ofGetWidth() - ((ofGetWidth() / 2) * player_.currentBarScale), 0,
-    (ofGetWidth() / 2) * player_.currentBarScale,
+  ofRect(ofGetWidth() - ((ofGetWidth() / 2) * currentScale), 0,
+    (ofGetWidth() / 2) * currentScale,
     (ofGetHeight() / 2) * barScale_.get().y);
 }
 
@@ -71,30 +80,39 @@ void HealthBar::loadFile() {
   gui_.loadFromFile("Game/HealthBarSettings.xml");
 }
 
-// ダメージを受けた際に使用
-void HealthBar::remnant(int damage) {
-  player_.health -= damage;  // 現在ＨＰからダメージ分減らす
-  float restHealth = (float)player_.health / player_.maxHealth;  // 現在ＨＰが最大ＨＰの何％になったか
-  float newBarScale = player_.maxBarScale * restHealth;  // 元のバーの長さから同じ％分だけ長さを短くする
-  float damageCurrent = player_.currentBarScale - newBarScale; // 赤ゲージの長さ
-  drawDamage(damageCurrent);  // こうやって使えたら良かったのに！
-  player_.currentBarScale = newBarScale;
+// 減少後のＨＰバーの長さを求める
+float HealthBar::remnant() {
+  float restHealth = (float)player_->getHP() / (float)player_->getMaxHP();  // 現在ＨＰが最大ＨＰの何％になったか
+  float newBarScale = barScale_.get().x * restHealth;  // 元のバーの長さから同じ％分だけ長さを短くする
+  return newBarScale;
 }
 
-// 赤いゲージの表示
-void HealthBar::drawDamage(float damageCurrent) {
-  switch (player_.playerNum) {
-  case PlayerOne:
-    ofPushMatrix();
-    ofColor(255, 0, 0);
-    ofRect(0 + player_.currentBarScale, 0,
-      damageCurrent,
-      (ofGetHeight() / 2) * barScale_.get().y);
-    ofPopMatrix();
-    break;
-  case PlayerTwo:
-    break;
-  default:
-    break;
-  }
+void HealthBar::setDamageScale() {
+  float damageCurrent = currentScale - remnant(); // 赤ゲージの長さ(現在の長さ - 被ダメ計算後の長さ)
+  currentScale = remnant(); // ＨＰバーの長さを更新
+  damageScale = damageCurrent;
+}
+
+// １ＰのＨＰ減少時
+void HealthBar::updateLeft() {
+  // ダメージの赤いバーの表示
+  ofPushStyle();
+  ofSetColor(255, 0, 0);
+  ofRect((ofGetWidth() / 2) * currentScale, 0,
+    (ofGetWidth() / 2) * damageScale,
+    (ofGetHeight() / 2) * barScale_.get().y);
+  ofPopStyle();
+  tempHealth = player_->getHP();  // 現在ＨＰの更新
+}
+
+// ２ＰのＨＰ減少時
+void HealthBar::updateRight() {
+  // ダメージの赤いバーの表示
+  ofPushStyle();
+  ofSetColor(255, 0, 0);
+  ofRect(ofGetWidth() - ((ofGetWidth() / 2) * (currentScale + damageScale)), 0,
+    (ofGetWidth() / 2) * damageScale,
+    (ofGetHeight() / 2) * barScale_.get().y);
+  ofPopStyle();
+  tempHealth = player_->getHP();  // 現在ＨＰの更新
 }
