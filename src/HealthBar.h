@@ -7,10 +7,6 @@
 
 class HealthBar {
 private:
-  enum PlayerNumber {
-    PlayerOne = 0,
-    PlayerTwo = 1,
-  };
   Player* player_;
   float currentScale; // Œ»İ‚g‚oƒo[‚Ì’·‚³
   float tempHealth; // ”í’e‘O‚Ì‚g‚o‚ğˆê•Û‘¶‚µ‚Ä‚¨‚­” 

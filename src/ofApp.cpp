@@ -5,13 +5,13 @@
 void ofApp::setup() {
   ofSetFrameRate(60);
   player_.setup(1, 500);
-  bar_.setup(nullptr);
+  bar_.setup(player_);
 }
 
 void ofApp::update() {}
 
 void ofApp::draw() {
-  bar_.draw();
+  bar_.draw(player_);
 }
 
 void ofApp::keyPressed(int key) {

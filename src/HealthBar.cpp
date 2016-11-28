@@ -24,7 +24,7 @@ void HealthBar::draw() {
   if (player_ == nullptr) { return; }
   // プレイヤー番号に応じて表示位置をズラす
   switch (player_->getID()) {
-  case PlayerOne:
+  case 0:
     drawLeft();
     if (player_->getHP() != tempHealth) {
       setDamageScale();
@@ -32,7 +32,7 @@ void HealthBar::draw() {
     updateLeft();
     break;
 
-  case PlayerTwo:
+  case 1:
     drawRight();
     if (player_->getHP() != tempHealth) {
       setDamageScale();
