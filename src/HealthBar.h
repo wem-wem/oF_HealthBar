@@ -7,7 +7,6 @@
 
 class HealthBar {
 private:
-  Player* player_;
   float currentScale; // 現在ＨＰバーの長さ
   float tempHealth; // 被弾前のＨＰを一時保存しておく箱
   float damageScale;  // ダメージバーの長さを一時保存しておく箱
@@ -22,12 +21,12 @@ private:
   void guiSetup();
   void saveFile();
   void loadFile();
-  float remnant();
-  void setDamageScale();
-  void updateLeft();
-  void updateRight();
+  float remnant(Player &player);
+  void setDamageScale(Player &player);
+  void updateLeft(Player &player);
+  void updateRight(Player &player);
 public:
-  void setup(Player *player);
+  void setup(Player &player);
   void update(ofEventArgs &args);
-  void draw();
+  void draw(Player &player);
 };

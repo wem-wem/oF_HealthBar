@@ -2,12 +2,10 @@
 #include "HealthBar.h"
 
 
-void HealthBar::setup(Player *player) {
-  if (player == nullptr) { return; }
-  player_ = player;
+void HealthBar::setup(Player &player) {
   guiSetup();
   loadFile(); // デフォルトの設定を最初に読み込む
-  tempHealth = player_->getMaxHP();  // 比較用ＨＰに最大値を代入
+  tempHealth = player.getMaxHP();  // 比較用ＨＰに最大値を代入
   currentScale = barScale_.get().x; // バーの元の長さをロードして代入
   ofAddListener(ofEvents().update, this, &HealthBar::update);
 }
@@ -20,32 +18,31 @@ void HealthBar::update(ofEventArgs &args) {
   }
 }
 
-void HealthBar::draw() {
-  if (player_ == nullptr) { return; }
+void HealthBar::draw(Player &player) {
   // プレイヤー番号に応じて表示位置をズラす
-  switch (player_->getID()) {
+  switch (player.getID()) {
   case 0:
     drawLeft();
-    if (player_->getHP() != tempHealth) {
-      setDamageScale();
+    if (player.getHP() != tempHealth) {
+      setDamageScale(player);
     }
-    updateLeft();
+    updateLeft(player);
     break;
 
   case 1:
     drawRight();
-    if (player_->getHP() != tempHealth) {
-      setDamageScale();
+    if (player.getHP() != tempHealth) {
+      setDamageScale(player);
     }
-    updateRight();
+    updateRight(player);
     break;
 
   default:  // 例外の数字が入力された場合は１Ｐ側を表示
     drawLeft();
-    if (player_->getHP() != tempHealth) {
-      setDamageScale();
+    if (player.getHP() != tempHealth) {
+      setDamageScale(player);
     }
-    updateLeft();
+    updateLeft(player);
     break;
   }
 }
@@ -83,20 +80,20 @@ void HealthBar::loadFile() {
 }
 
 // 減少後のＨＰバーの長さを求める
-float HealthBar::remnant() {
-  float restHealth = (float)player_->getHP() / (float)player_->getMaxHP();  // 現在ＨＰが最大ＨＰの何％になったか
+float HealthBar::remnant(Player &player) {
+  float restHealth = (float)player.getHP() / (float)player.getMaxHP();  // 現在ＨＰが最大ＨＰの何％になったか
   float newBarScale = barScale_.get().x * restHealth;  // 元のバーの長さから同じ％分だけ長さを短くする
   return newBarScale;
 }
 
-void HealthBar::setDamageScale() {
-  float damageCurrent = currentScale - remnant(); // 赤ゲージの長さ(現在の長さ - 被ダメ計算後の長さ)
-  currentScale = remnant(); // ＨＰバーの長さを更新
+void HealthBar::setDamageScale(Player &player) {
+  float damageCurrent = currentScale - remnant(player); // 赤ゲージの長さ(現在の長さ - 被ダメ計算後の長さ)
+  currentScale = remnant(player); // ＨＰバーの長さを更新
   damageScale = damageCurrent;
 }
 
 // １ＰのＨＰ減少時
-void HealthBar::updateLeft() {
+void HealthBar::updateLeft(Player &player) {
   // ダメージの赤いバーの表示
   ofPushStyle();
   ofSetColor(255, 0, 0);
@@ -104,11 +101,11 @@ void HealthBar::updateLeft() {
     (ofGetWidth() / 2) * damageScale,
     (ofGetHeight() / 2) * barScale_.get().y);
   ofPopStyle();
-  tempHealth = player_->getHP();  // 現在ＨＰの更新
+  tempHealth = player.getHP();  // 現在ＨＰの更新
 }
 
 // ２ＰのＨＰ減少時
-void HealthBar::updateRight() {
+void HealthBar::updateRight(Player &player) {
   // ダメージの赤いバーの表示
   ofPushStyle();
   ofSetColor(255, 0, 0);
@@ -116,5 +113,5 @@ void HealthBar::updateRight() {
     (ofGetWidth() / 2) * damageScale,
     (ofGetHeight() / 2) * barScale_.get().y);
   ofPopStyle();
-  tempHealth = player_->getHP();  // 現在ＨＰの更新
+  tempHealth = player.getHP();  // 現在ＨＰの更新
 }
