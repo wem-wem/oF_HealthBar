@@ -3,7 +3,7 @@
 
 
 void HealthBar::setup(Player *player) {
-  if (player_ == nullptr) { return; }
+  if (player == nullptr) { return; }
   player_ = player;
   guiSetup();
   loadFile(); // デフォルトの設定を最初に読み込む
