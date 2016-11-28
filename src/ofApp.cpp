@@ -5,7 +5,7 @@
 void ofApp::setup() {
   ofSetFrameRate(60);
   player_.setup(1, 500);
-  bar_.setup(&player_);
+  bar_.setup(nullptr);
 }
 
 void ofApp::update() {}

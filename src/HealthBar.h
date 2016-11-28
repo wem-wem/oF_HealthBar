@@ -13,8 +13,8 @@ private:
   };
   Player* player_;
   float currentScale; // 現在ＨＰバーの長さ
-  float tempHealth; // ダメージを受ける前のＨＰを入れておく箱
-  float damageScale;
+  float tempHealth; // 被弾前のＨＰを一時保存しておく箱
+  float damageScale;  // ダメージバーの長さを一時保存しておく箱
 
   ofxPanel gui_;
   ofParameter<ofVec2f> barScale_;

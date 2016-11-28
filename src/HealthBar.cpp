@@ -3,6 +3,7 @@
 
 
 void HealthBar::setup(Player *player) {
+  if (player_ == nullptr) { return; }
   player_ = player;
   guiSetup();
   loadFile(); // デフォルトの設定を最初に読み込む
@@ -20,6 +21,7 @@ void HealthBar::update(ofEventArgs &args) {
 }
 
 void HealthBar::draw() {
+  if (player_ == nullptr) { return; }
   // プレイヤー番号に応じて表示位置をズラす
   switch (player_->getID()) {
   case PlayerOne:
