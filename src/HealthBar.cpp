@@ -2,11 +2,16 @@
 #include "HealthBar.h"
 
 
+void HealthBar::setBarScale(float x, float y) {
+  scaleX_ = x;
+  scaleY_ = y;
+}
+
+// １Ｒ毎に呼び出して下さい
 void HealthBar::setup(Player &player) {
-  guiSetup();
   loadFile(); // デフォルトの設定を最初に読み込む
   tempHealth = player.getMaxHP();  // 比較用ＨＰに最大値を代入
-  currentScale = barScale_.get().x; // バーの元の長さをロードして代入
+  currentScale = scaleX_; // バーの元の長さをロードして代入
   ofAddListener(ofEvents().update, this, &HealthBar::update);
 }
 
@@ -51,38 +56,27 @@ void HealthBar::draw(Player &player) {
 void HealthBar::drawLeft() {
   ofRect(0, 0,
     (ofGetWidth() / 2) * currentScale,
-    (ofGetHeight() / 2) * barScale_.get().y);
+    (ofGetHeight() / 2) * scaleY_);
 }
 
 // 2Pなら
 void HealthBar::drawRight() {
   ofRect(ofGetWidth() - ((ofGetWidth() / 2) * currentScale), 0,
     (ofGetWidth() / 2) * currentScale,
-    (ofGetHeight() / 2) * barScale_.get().y);
-}
-
-void HealthBar::guiSetup() {
-  save_.addListener(this, &HealthBar::saveFile);
-  load_.addListener(this, &HealthBar::loadFile);
-
-  gui_.setup();
-  gui_.add(barScale_.set("BarScale", ofVec2f(1, 1), ofVec2f(0, 0), ofVec2f(1, 1)));
-  gui_.add(save_.setup("Save_BarScale"));
-  gui_.add(load_.setup("Loda_BarScale"));
-}
-
-void HealthBar::saveFile() {
-  gui_.saveToFile("Game/HealthBarSettings.xml");
+    (ofGetHeight() / 2) * scaleY_);
 }
 
 void HealthBar::loadFile() {
-  gui_.loadFromFile("Game/HealthBarSettings.xml");
+  if (xml_.loadFile("Game/HealthBarSettings.xml")) {
+    setBarScale(xml_.getValue("group:ScaleX", 0.0),
+                xml_.getValue("group:ScaleY", 0.0));
+  }
 }
 
 // 減少後のＨＰバーの長さを求める
 float HealthBar::remnant(Player &player) {
   float restHealth = (float)player.getHP() / (float)player.getMaxHP();  // 現在ＨＰが最大ＨＰの何％になったか
-  float newBarScale = barScale_.get().x * restHealth;  // 元のバーの長さから同じ％分だけ長さを短くする
+  float newBarScale = scaleX_ * restHealth;  // 元のバーの長さから同じ％分だけ長さを短くする
   return newBarScale;
 }
 
@@ -99,7 +93,7 @@ void HealthBar::updateLeft(Player &player) {
   ofSetColor(255, 0, 0);
   ofRect((ofGetWidth() / 2) * currentScale, 0,
     (ofGetWidth() / 2) * damageScale,
-    (ofGetHeight() / 2) * barScale_.get().y);
+    (ofGetHeight() / 2) * scaleY_);
   ofPopStyle();
   tempHealth = player.getHP();  // 現在ＨＰの更新
 }
@@ -111,7 +105,7 @@ void HealthBar::updateRight(Player &player) {
   ofSetColor(255, 0, 0);
   ofRect(ofGetWidth() - ((ofGetWidth() / 2) * (currentScale + damageScale)), 0,
     (ofGetWidth() / 2) * damageScale,
-    (ofGetHeight() / 2) * barScale_.get().y);
+    (ofGetHeight() / 2) * scaleY_);
   ofPopStyle();
   tempHealth = player.getHP();  // 現在ＨＰの更新
 }
